@@ -1,0 +1,20 @@
+{
+  "name": "sari-app",
+  "version": "1.0.0",
+  "description": "SARI - Full Futuristic Social Chat App",
+  "scripts": {
+    "dev": "node ./node_modules/.bin/concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start"
+  },
+  "keywords": ["social", "chat", "mern", "nextjs"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+
