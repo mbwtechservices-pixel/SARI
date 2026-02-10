@@ -3,7 +3,6 @@
 A full-stack MERN + Next.js social chatting web application with real-time messaging, friend system, posts feed, and futuristic UI.
 
 ## 🚀 Features
-
 - **Authentication**: Signup with OTP verification, Login, Forgot Password
 - **User Profiles**: Customizable profiles with theme colors
 - **Friend System**: Search users, send/accept friend requests
