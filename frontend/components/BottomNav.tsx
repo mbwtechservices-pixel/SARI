@@ -33,8 +33,8 @@ export default function BottomNav() {
     const fetchNotifications = async () => {
       try {
         const [chatsRes, requestsRes] = await Promise.all([
-          api.get('/api/chat/list'),
-          api.get('/api/friends/requests'),
+          api.get('/chat/list'),
+          api.get('/friends/requests'),
         ]);
 
         const chats = chatsRes.data || [];

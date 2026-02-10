@@ -58,7 +58,7 @@ export default function FriendsPage() {
   const fetchFriends = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/friends/list');
+      const response = await api.get('/friends/list');
       setFriends(response.data);
     } catch (error) {
       toast.error('Failed to load friends');
@@ -70,7 +70,7 @@ export default function FriendsPage() {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/friends/requests');
+      const response = await api.get('/friends/requests');
       setRequests(response.data);
     } catch (error) {
       toast.error('Failed to load requests');
@@ -82,7 +82,7 @@ export default function FriendsPage() {
   const fetchPublicUsers = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/friends/public');
+      const response = await api.get('/friends/public');
       setPublicUsers(response.data);
 
       // When there's no search query, show all public users
@@ -116,7 +116,7 @@ export default function FriendsPage() {
 
   const sendFriendRequest = async (userId: string) => {
     try {
-      await api.post('/api/friends/request', { recipientId: userId });
+      await api.post('/friends/request', { recipientId: userId });
       toast.success('Friend request sent!');
       handleSearch(searchQuery);
     } catch (error: any) {

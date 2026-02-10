@@ -37,7 +37,7 @@ export default function HomePage() {
 
   const fetchFeed = async () => {
     try {
-      const response = await api.get('/api/posts/feed');
+      const response = await api.get('/posts/feed');
       setPosts(response.data);
     } catch (error) {
       toast.error('Failed to load feed');

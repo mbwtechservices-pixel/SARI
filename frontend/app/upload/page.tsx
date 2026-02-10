@@ -47,7 +47,7 @@ export default function UploadPage() {
         formData.append('image', image);
       }
 
-      await api.post('/api/posts/create', formData, {
+      await api.post('/posts/create', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

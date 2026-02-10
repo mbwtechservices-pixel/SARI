@@ -41,7 +41,7 @@ export default function ChatsPage() {
 
   const fetchChats = async () => {
     try {
-      const response = await api.get('/api/chat/list');
+      const response = await api.get('/chat/list');
       const data: Chat[] = response.data;
 
       // Ensure only one conversation per other user (frontend de-duplication as a safety net)

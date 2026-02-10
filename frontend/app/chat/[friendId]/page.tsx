@@ -88,7 +88,7 @@ export default function ChatPage() {
 
   const initializeChat = async () => {
     try {
-      const response = await api.post('/api/chat/get-or-create', {
+      const response = await api.post('/chat/get-or-create', {
         friendId: params.friendId,
       });
       setChatId(response.data._id);

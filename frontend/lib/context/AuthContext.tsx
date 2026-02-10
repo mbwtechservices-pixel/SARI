@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const response = await api.get('/api/user/me');
+      const response = await api.get('/user/me');
       setUser(response.data);
     } catch (error) {
       setUser(null);
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await api.post('/api/auth/login', { email, password });
+      const response = await api.post('/auth/login', { email, password });
       setUser(response.data.user);
       toast.success('Login successful!');
     } catch (error: any) {
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const response = await api.post('/api/auth/signup', { name, email, password });
+      const response = await api.post('/auth/signup', { name, email, password });
       toast.success('OTP sent to your email!');
       return response.data;
     } catch (error: any) {
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const verifyOTP = async (userId: string, otp: string) => {
     try {
-      const response = await api.post('/api/auth/verify-otp', { userId, otp });
+      const response = await api.post('/auth/verify-otp', { userId, otp });
       setUser(response.data.user);
       toast.success('Account created successfully!');
     } catch (error: any) {
@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await api.post('/api/auth/logout');
+      await api.post('/auth/logout');
       setUser(null);
       toast.success('Logged out successfully');
     } catch (error) {

@@ -70,7 +70,7 @@ export default function SettingsPage() {
         submitFormData.append('profilePicture', profilePicture);
       }
 
-      const response = await api.put('/api/user/profile', submitFormData, {
+      const response = await api.put('/user/profile', submitFormData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
