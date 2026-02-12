@@ -11,6 +11,7 @@ interface User {
   profilePicture: string;
   bio: string;
   accountMode: 'public' | 'private';
+  isEmailVerified?: boolean;
   themeColors: {
     primary: string;
     secondary: string;
