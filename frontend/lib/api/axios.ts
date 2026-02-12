@@ -5,7 +5,7 @@ import axios from 'axios';
 // Example:
 //   NEXT_PUBLIC_API_BASE_URL = "https://your-backend.vercel.app/api"
 const api = axios.create({
-  baseURL:  '/api' ,
+  baseURL:  '/' ,
    //baseURL: 'http://localhost:7993/api',
   withCredentials: true,
   headers: {
