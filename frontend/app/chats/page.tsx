@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import BottomNav from '@/components/BottomNav';
+import TopNav from '@/components/TopNav';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import api from '@/lib/api/axios';
 import { useAuth } from '@/lib/context/AuthContext';
@@ -72,7 +73,8 @@ export default function ChatsPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen flex items-center justify-center pb-20">
+        <TopNav />
+        <div className="min-h-screen flex items-center justify-center pb-20 pt-16">
           <LoadingSpinner />
         </div>
       </ProtectedRoute>
@@ -81,7 +83,8 @@ export default function ChatsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen pb-20">
+      <TopNav />
+      <div className="min-h-screen pb-20 pt-16">
         <div className="max-w-4xl mx-auto p-4">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}

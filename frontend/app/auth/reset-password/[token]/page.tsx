@@ -29,7 +29,7 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
     try {
-      await api.post(`/api/auth/reset-password/${params.token}`, { password });
+      await api.post(`/auth/reset-password/${params.token}`, { password });
       toast.success('Password reset successful!');
       router.push('/auth/login');
     } catch (error: any) {

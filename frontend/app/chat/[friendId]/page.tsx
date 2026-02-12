@@ -96,7 +96,7 @@ export default function ChatPage() {
         response.data.participants.find((p: any) => p._id !== user?.id)
       );
       
-      const messagesResponse = await api.get(`/api/chat/${response.data._id}/messages`);
+      const messagesResponse = await api.get(`/chat/${response.data._id}/messages`);
       setMessages(messagesResponse.data);
     } catch (error) {
       toast.error('Failed to load chat');
@@ -123,7 +123,7 @@ export default function ChatPage() {
       formData.append('content', newMessage);
       formData.append('type', type);
 
-      const response = await api.post(`/api/chat/${chatId}/message`, formData, {
+      const response = await api.post(`/chat/${chatId}/message`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -165,7 +165,7 @@ export default function ChatPage() {
     formData.append('type', 'image');
 
     try {
-      const response = await api.post(`/api/chat/${chatId}/message`, formData, {
+      const response = await api.post(`/chat/${chatId}/message`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -217,9 +217,9 @@ export default function ChatPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <div className="h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 overflow-hidden">
         {/* Header */}
-        <div className="glass-dark border-b border-white/10 p-4 flex items-center space-x-3">
+        <div className="flex-shrink-0 glass-dark border-b border-white/10 p-4 flex items-center space-x-3">
           <button
             onClick={() => router.back()}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -257,7 +257,7 @@ export default function ChatPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
           <AnimatePresence>
             {messages.map((message) => {
               const senderId =
@@ -336,7 +336,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input */}
-        <div className="glass-dark border-t border-white/10 p-4">
+        <div className="flex-shrink-0 glass-dark border-t border-white/10 p-4">
           <div className="relative">
             {showEmojiPicker && (
               <div className="absolute bottom-full mb-2 left-0">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import BottomNav from '@/components/BottomNav';
+import TopNav from '@/components/TopNav';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import api from '@/lib/api/axios';
 import { FiHeart, FiMessageCircle, FiMoreVertical } from 'react-icons/fi';
@@ -48,7 +49,7 @@ export default function HomePage() {
 
   const handleLike = async (postId: string) => {
     try {
-      const response = await api.put(`/api/posts/${postId}/like`);
+      const response = await api.put(`/posts/${postId}/like`);
       setPosts((prev) =>
         prev.map((post) =>
           post._id === postId ? { ...post, likes: response.data.likes } : post
@@ -78,7 +79,8 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen pb-20">
+      <TopNav />
+      <div className="min-h-screen pb-20 pt-16">
         <div className="max-w-2xl mx-auto p-4 space-y-6">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}

@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User.js';
+import Friend from '../models/Friend.js';
 import { authenticate } from '../middleware/auth.js';
 import { upload, uploadToCloudinary } from '../utils/cloudinary.js';
 
@@ -56,6 +57,41 @@ router.put('/profile', authenticate, upload.single('profilePicture'), async (req
   }
 });
 
+// Change password
+router.put('/change-password', authenticate, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Current password and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'New password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Get user by ID
 router.get('/:id', authenticate, async (req, res) => {
   try {
@@ -66,14 +102,35 @@ router.get('/:id', authenticate, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // If private account, only show to friends
-    if (user.accountMode === 'private') {
-      // Check if requester is a friend (simplified - you might want to check Friend model)
-      // For now, allow viewing
+    // Check friendship status
+    let friendshipStatus = 'none';
+    if (req.user._id.toString() !== user._id.toString()) {
+      const friendship = await Friend.findOne({
+        $or: [
+          { requester: req.user._id, recipient: user._id },
+          { requester: user._id, recipient: req.user._id },
+        ],
+      });
+
+      if (friendship) {
+        if (friendship.status === 'accepted') {
+          friendshipStatus = 'friends';
+        } else if (friendship.status === 'pending') {
+          if (friendship.requester.toString() === req.user._id.toString()) {
+            friendshipStatus = 'sent';
+          } else {
+            friendshipStatus = 'received';
+          }
+        }
+      }
     }
 
-    res.json(user);
+    const userObj = user.toObject();
+    userObj.friendshipStatus = friendshipStatus;
+
+    res.json(userObj);
   } catch (error) {
+    console.error('Get user error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

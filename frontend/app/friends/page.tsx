@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import BottomNav from '@/components/BottomNav';
+import TopNav from '@/components/TopNav';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import api from '@/lib/api/axios';
-import { FiSearch, FiUserPlus, FiCheck, FiX } from 'react-icons/fi';
+import { FiSearch, FiUserPlus, FiCheck, FiX, FiMessageCircle } from 'react-icons/fi';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -105,7 +106,7 @@ export default function FriendsPage() {
 
     setLoading(true);
     try {
-      const response = await api.get(`/api/friends/search?query=${query}`);
+      const response = await api.get(`/friends/search?query=${query}`);
       setSearchResults(response.data);
     } catch (error) {
       toast.error('Search failed');
@@ -126,7 +127,7 @@ export default function FriendsPage() {
 
   const acceptRequest = async (requestId: string) => {
     try {
-      await api.put(`/api/friends/accept/${requestId}`);
+      await api.put(`/friends/accept/${requestId}`);
       toast.success('Friend request accepted!');
       fetchRequests();
       fetchFriends();
@@ -137,7 +138,7 @@ export default function FriendsPage() {
 
   const rejectRequest = async (requestId: string) => {
     try {
-      await api.put(`/api/friends/reject/${requestId}`);
+      await api.put(`/friends/reject/${requestId}`);
       toast.success('Friend request rejected');
       fetchRequests();
     } catch (error) {
@@ -149,9 +150,14 @@ export default function FriendsPage() {
     router.push(`/chat/${friendId}`);
   };
 
+  const openProfile = (userId: string) => {
+    router.push(`/profile/${userId}`);
+  };
+
   return (
     <ProtectedRoute>
-      <div className="min-h-screen pb-20">
+      <TopNav />
+      <div className="min-h-screen pb-20 pt-16">
         <div className="max-w-4xl mx-auto p-4">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -206,7 +212,10 @@ export default function FriendsPage() {
                       animate={{ opacity: 1, x: 0 }}
                       className="glass p-4 flex items-center justify-between"
                     >
-                      <div className="flex items-center space-x-3">
+                      <div
+                        onClick={() => openProfile(user._id)}
+                        className="flex items-center space-x-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      >
                         <div className="relative">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                             {user.profilePicture ? (
@@ -232,30 +241,35 @@ export default function FriendsPage() {
                           <p className="text-sm text-gray-400">{user.email}</p>
                         </div>
                       </div>
-                      {user.friendshipStatus === 'friends' ? (
-                        <span className="px-3 py-1 rounded-lg bg-green-600 text-sm">
-                          Friends
-                        </span>
-                      ) : user.friendshipStatus === 'sent' ? (
-                        <button
-                          disabled
-                          className="flex items-center space-x-1 px-3 py-1 rounded-lg bg-yellow-600 text-sm opacity-80 cursor-default"
-                        >
-                          <FiCheck size={16} />
-                          <span>Sent</span>
-                        </button>
-                      ) : user.friendshipStatus === 'received' ? (
-                        <span className="px-3 py-1 rounded-lg bg-blue-600 text-sm">
-                          Requested you
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => sendFriendRequest(user._id)}
-                          className="p-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
-                        >
-                          <FiUserPlus size={20} />
-                        </button>
-                      )}
+                      <div className="flex items-center space-x-2">
+                        {user.friendshipStatus === 'friends' ? (
+                          <span className="px-3 py-1 rounded-lg bg-green-600 text-sm">
+                            Friends
+                          </span>
+                        ) : user.friendshipStatus === 'sent' ? (
+                          <button
+                            disabled
+                            className="flex items-center space-x-1 px-3 py-1 rounded-lg bg-yellow-600 text-sm opacity-80 cursor-default"
+                          >
+                            <FiCheck size={16} />
+                            <span>Sent</span>
+                          </button>
+                        ) : user.friendshipStatus === 'received' ? (
+                          <span className="px-3 py-1 rounded-lg bg-blue-600 text-sm">
+                            Requested you
+                          </span>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sendFriendRequest(user._id);
+                            }}
+                            className="p-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+                          >
+                            <FiUserPlus size={20} />
+                          </button>
+                        )}
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -282,7 +296,10 @@ export default function FriendsPage() {
                             animate={{ opacity: 1, x: 0 }}
                             className="glass p-4 flex items-center justify-between"
                           >
-                            <div className="flex items-center space-x-3">
+                            <div
+                              onClick={() => openProfile(request.requester._id)}
+                              className="flex items-center space-x-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                            >
                               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                                 {request.requester.profilePicture ? (
                                   <Image
@@ -302,13 +319,19 @@ export default function FriendsPage() {
                             </div>
                             <div className="flex space-x-2">
                               <button
-                                onClick={() => acceptRequest(request._id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  acceptRequest(request._id);
+                                }}
                                 className="p-2 bg-green-600 rounded-lg hover:bg-green-700"
                               >
                                 <FiCheck size={20} />
                               </button>
                               <button
-                                onClick={() => rejectRequest(request._id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  rejectRequest(request._id);
+                                }}
                                 className="p-2 bg-red-600 rounded-lg hover:bg-red-700"
                               >
                                 <FiX size={20} />
@@ -331,7 +354,10 @@ export default function FriendsPage() {
                             animate={{ opacity: 1, x: 0 }}
                             className="glass p-4 flex items-center justify-between"
                           >
-                            <div className="flex items-center space-x-3">
+                            <div
+                              onClick={() => openProfile(request.recipient._id)}
+                              className="flex items-center space-x-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                            >
                               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                                 {request.recipient.profilePicture ? (
                                   <Image
@@ -382,10 +408,12 @@ export default function FriendsPage() {
                     key={friend._id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    onClick={() => openChat(friend._id)}
                     className="glass p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
                   >
-                    <div className="flex items-center space-x-3">
+                    <div
+                      onClick={() => openProfile(friend._id)}
+                      className="flex items-center space-x-3 flex-1"
+                    >
                       <div className="relative">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                           {friend.profilePicture ? (
@@ -413,6 +441,16 @@ export default function FriendsPage() {
                         </p>
                       </div>
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openChat(friend._id);
+                      }}
+                      className="p-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+                      title="Open chat"
+                    >
+                      <FiMessageCircle size={20} />
+                    </button>
                   </motion.div>
                 ))
               )}

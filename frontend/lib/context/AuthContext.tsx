@@ -41,7 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     try {
       const response = await api.get('/user/me');
-      setUser(response.data);
+      const userData = response.data;
+      // Map _id to id for consistency
+      if (userData._id && !userData.id) {
+        userData.id = userData._id;
+      }
+      setUser(userData);
     } catch (error) {
       setUser(null);
     } finally {
@@ -52,7 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      setUser(response.data.user);
+      const userData = response.data.user;
+      // Map _id to id for consistency
+      if (userData._id && !userData.id) {
+        userData.id = userData._id;
+      }
+      setUser(userData);
       toast.success('Login successful!');
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Login failed');
@@ -74,7 +84,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const verifyOTP = async (userId: string, otp: string) => {
     try {
       const response = await api.post('/auth/verify-otp', { userId, otp });
-      setUser(response.data.user);
+      const userData = response.data.user;
+      // Map _id to id for consistency
+      if (userData._id && !userData.id) {
+        userData.id = userData._id;
+      }
+      setUser(userData);
       toast.success('Account created successfully!');
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'OTP verification failed');
@@ -94,7 +109,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUser = (userData: Partial<User>) => {
     if (user) {
-      setUser({ ...user, ...userData });
+      const updatedData = { ...user, ...userData };
+      // Ensure id is set if _id exists
+      if ((updatedData as any)._id && !updatedData.id) {
+        updatedData.id = (updatedData as any)._id;
+      }
+      setUser(updatedData);
     }
   };
 
